@@ -1,4 +1,4 @@
-import { App, Component, Modal, Notice, TFile } from 'obsidian';
+import { App, Component, Modal, Notice, TFile, Platform } from 'obsidian';
 
 
 type SupportedImageFormat = 'jpeg' | 'png' | 'webp' | 'avif';
@@ -351,46 +351,62 @@ export class Crop extends Modal {
 		const modalElement = this.containerEl.querySelector('.modal') as HTMLElement;
 		if (!modalElement) return;
 
-		const isMobile = window.innerWidth <= 768;
+		const isMobile = Platform.isMobile || window.innerWidth <= 768;
 
-		// Get image dimensions
+		// clientWidth / clientHeight always match the actual CSS layout viewport on Android WebView
+		const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
+		const viewportHeight = document.documentElement.clientHeight || window.innerHeight;
+
 		const imgWidth = this.originalImage.naturalWidth;
 		const imgHeight = this.originalImage.naturalHeight;
 		const imgAspectRatio = imgWidth / imgHeight;
 
-		let modalWidth, modalHeight;
-
 		if (isMobile) {
-			// Mobile layout: full width with padding
-			modalWidth = window.innerWidth - (this.MODAL_PADDING * 2);
-			modalHeight = Math.min(
-				window.innerHeight - (this.MODAL_PADDING * 2),
-				modalWidth / imgAspectRatio + this.CHROME_HEIGHT
-			);
-		} else {
-			// Desktop layout: static size at 80% of window
-			modalWidth = window.innerWidth * this.STATIC_DESKTOP_WIDTH_RATIO;
-			modalHeight = window.innerHeight * this.STATIC_DESKTOP_HEIGHT_RATIO;
+			const maxWidth = viewportWidth - (this.MODAL_PADDING * 2);
+			const maxHeight = viewportHeight - (this.MODAL_PADDING * 2);
 
-			// Ensure the image container maintains aspect ratio within these bounds
-			const availableImageHeight = modalHeight - this.CHROME_HEIGHT;
-			const availableImageWidth = modalWidth;
+			const headerEl = modalElement.querySelector('.crop-modal-header') as HTMLElement | null;
+			const buttonsEl = modalElement.querySelector('.crop-modal-buttons') as HTMLElement | null;
+			const actualChromeHeight = (headerEl && buttonsEl && (headerEl.offsetHeight + buttonsEl.offsetHeight) > 0)
+				? headerEl.offsetHeight + buttonsEl.offsetHeight + 24
+				: this.CHROME_HEIGHT;
 
-			// Adjust container size to maintain aspect ratio
-			if (imgAspectRatio > availableImageWidth / availableImageHeight) {
-				// Image is wider than available space
-				modalHeight = (modalWidth / imgAspectRatio) + this.CHROME_HEIGHT;
-			} else {
-				// Image is taller than available space
-				modalWidth = (availableImageHeight * imgAspectRatio);
-			}
+			const modalWidth = maxWidth;
+			const modalHeight = Math.min(maxHeight, (modalWidth / imgAspectRatio) + actualChromeHeight);
+
+			// Clear manual offsets so CSS flex centering on .modal-container handles positioning cleanly
+			modalElement.setCssStyles({
+				position: 'relative',
+				top: 'auto',
+				left: 'auto',
+				right: 'auto',
+				bottom: 'auto',
+				transform: 'none',
+				margin: 'auto',
+				width: `${modalWidth}px`,
+				maxWidth: `${maxWidth}px`,
+				height: `${modalHeight}px`,
+				maxHeight: `${maxHeight}px`
+			});
+			return;
 		}
 
-		// Apply minimum dimensions
+		// Desktop layout
+		let modalWidth = viewportWidth * this.STATIC_DESKTOP_WIDTH_RATIO;
+		let modalHeight = viewportHeight * this.STATIC_DESKTOP_HEIGHT_RATIO;
+
+		const availableImageHeight = modalHeight - this.CHROME_HEIGHT;
+		const availableImageWidth = modalWidth;
+
+		if (imgAspectRatio > availableImageWidth / availableImageHeight) {
+			modalHeight = (modalWidth / imgAspectRatio) + this.CHROME_HEIGHT;
+		} else {
+			modalWidth = availableImageHeight * imgAspectRatio;
+		}
+
 		modalWidth = Math.max(this.MIN_WIDTH, modalWidth);
 		modalHeight = Math.max(this.MIN_HEIGHT, modalHeight);
 
-		// Apply styles
 		modalElement.setCssStyles({
 			width: `${modalWidth}px`,
 			height: `${modalHeight}px`,
@@ -1084,3 +1100,5 @@ export class Crop extends Modal {
 		this.contentEl.empty();
 	}
 }
+
+
