@@ -17,24 +17,14 @@
 /* Failsafe: when native image selection is disabled, keep Obsidian's default
  * Live Preview image focus affordances hidden even if focus slips through for a frame.
  */
-body.image-converter-disable-native-image-selection:not(.is-mobile)
-	.markdown-source-view
-	.image-embed:focus-within,
-body.image-converter-disable-native-image-selection:not(.is-mobile)
-	.markdown-source-view
-	.internal-embed.image-embed:focus-within {
+body.image-converter-disable-native-image-selection:not(.is-mobile) .markdown-source-view .image-embed:focus-within,
+body.image-converter-disable-native-image-selection:not(.is-mobile) .markdown-source-view .internal-embed.image-embed:focus-within {
 	outline: none !important;
 	box-shadow: none !important;
 }
 
-body.image-converter-disable-native-image-selection:not(.is-mobile)
-	.markdown-source-view
-	.image-embed:focus-within
-	.edit-block-button,
-body.image-converter-disable-native-image-selection:not(.is-mobile)
-	.markdown-source-view
-	.internal-embed.image-embed:focus-within
-	.edit-block-button {
+body.image-converter-disable-native-image-selection:not(.is-mobile) .markdown-source-view .image-embed:focus-within .edit-block-button,
+body.image-converter-disable-native-image-selection:not(.is-mobile) .markdown-source-view .internal-embed.image-embed:focus-within .edit-block-button {
 	opacity: 0 !important;
 	pointer-events: none !important;
 }
@@ -43,14 +33,8 @@ body.image-converter-disable-native-image-selection:not(.is-mobile)
  * revealed on hover. Hide the whole native toolbar so it cannot overlap the
  * plugin's resize handles or receive pointer input.
  */
-body.image-converter-disable-native-image-selection:not(.is-mobile)
-	.markdown-source-view
-	.image-embed
-	.embed-actions,
-body.image-converter-disable-native-image-selection:not(.is-mobile)
-	.markdown-source-view
-	.internal-embed.image-embed
-	.embed-actions {
+body.image-converter-disable-native-image-selection:not(.is-mobile) .markdown-source-view .image-embed .embed-actions,
+body.image-converter-disable-native-image-selection:not(.is-mobile) .markdown-source-view .internal-embed.image-embed .embed-actions {
 	display: none !important;
 	pointer-events: none !important;
 }
@@ -58,48 +42,28 @@ body.image-converter-disable-native-image-selection:not(.is-mobile)
 /* The native image-reveal tooltip is absolutely positioned and escapes Obsidian's
  * fixed-height table row. The Markdown link is the useful part of edit mode here.
  */
-body.image-converter-disable-native-image-selection:not(.is-mobile)
-	.markdown-source-view
-	.cm-table-widget
-	.cm-image-reveal-tooltip {
+body.image-converter-disable-native-image-selection:not(.is-mobile) .markdown-source-view .cm-table-widget .cm-image-reveal-tooltip {
 	display: none !important;
 	pointer-events: none !important;
 }
 
-body.image-converter-disable-native-image-selection:not(.is-mobile)
-	.markdown-source-view
-	.image-embed
-	.image-wrapper::after,
-body.image-converter-disable-native-image-selection:not(.is-mobile)
-	.markdown-source-view
-	.internal-embed.image-embed
-	.image-wrapper::after {
+body.image-converter-disable-native-image-selection:not(.is-mobile) .markdown-source-view .image-embed .image-wrapper::after,
+body.image-converter-disable-native-image-selection:not(.is-mobile) .markdown-source-view .internal-embed.image-embed .image-wrapper::after {
 	content: none !important;
 	box-shadow: none !important;
 }
 
-body.image-converter-disable-native-image-selection:not(.is-mobile)
-	.markdown-source-view
-	.image-embed
-	.image-resize-corner,
-body.image-converter-disable-native-image-selection:not(.is-mobile)
-	.markdown-source-view
-	.internal-embed.image-embed
-	.image-resize-corner {
+body.image-converter-disable-native-image-selection:not(.is-mobile) .markdown-source-view .image-embed .image-resize-corner,
+body.image-converter-disable-native-image-selection:not(.is-mobile) .markdown-source-view .internal-embed.image-embed .image-resize-corner {
 	opacity: 0 !important;
 	pointer-events: none !important;
 }
 
-body.image-converter-disable-native-image-selection:not(.is-mobile)
-	.markdown-source-view
-	.image-embed:focus-within
-	.image-resize-corner::after,
-body.image-converter-disable-native-image-selection:not(.is-mobile)
-	.markdown-source-view
-	.internal-embed.image-embed:focus-within
-	.image-resize-corner::after {
+body.image-converter-disable-native-image-selection:not(.is-mobile) .markdown-source-view .image-embed:focus-within .image-resize-corner::after,
+body.image-converter-disable-native-image-selection:not(.is-mobile) .markdown-source-view .internal-embed.image-embed:focus-within .image-resize-corner::after {
 	opacity: 0 !important;
 }
+
 /* Remove X icon and get use all available space*/
 .image-converter-settings-tab {
 	padding: 20px;
@@ -190,7 +154,7 @@ body.image-converter-disable-native-image-selection:not(.is-mobile)
 	/* Match the hover underline color */
 }
 
-.image-converter-tab > svg {
+.image-converter-tab>svg {
 	width: 1.2em;
 	height: 1.2em;
 	margin-right: 6px;
@@ -403,10 +367,9 @@ html[data-theme="dark"] {
 
 /* Obsidian 1.11+ sets padding-top/bottom: 0 on modal .setting-item elements.
  * Match exact DOM structure with child combinator for maximum specificity. */
-.modal-content.process-single-image-modal > .conversion-settings-container,
-.modal-content.process-single-image-modal > .resize-settings-container,
-.modal-content.process-single-image-modal
-	> .process-single-image-modal-buttons {
+.modal-content.process-single-image-modal>.conversion-settings-container,
+.modal-content.process-single-image-modal>.resize-settings-container,
+.modal-content.process-single-image-modal>.process-single-image-modal-buttons {
 	padding: 5px;
 }
 
@@ -417,12 +380,8 @@ html[data-theme="dark"] {
 	padding-bottom: var(--size-4-2, 0.75em);
 }
 
-.modal:not(.mod-settings)
-	.process-single-image-modal
-	.setting-item:not(.setting-item-heading):last-child,
-.modal:not(.mod-settings)
-	.image-convert-modal
-	.setting-item:not(.setting-item-heading):last-child {
+.modal:not(.mod-settings) .process-single-image-modal .setting-item:not(.setting-item-heading):last-child,
+.modal:not(.mod-settings) .image-convert-modal .setting-item:not(.setting-item-heading):last-child {
 	padding-bottom: var(--size-4-2, 0.75em);
 }
 
@@ -453,14 +412,18 @@ html[data-theme="dark"] {
 /* --- Dropdown --- */
 .image-converter-global-preset-container .setting-item {
 	display: flex;
-	flex-direction: row; /* Obsidian 1.11+ changed default to column */
+	flex-direction: row;
+	/* Obsidian 1.11+ changed default to column */
 	align-items: center;
 	gap: 10px;
-	flex: 1 1 auto; /* Allow growing but can shrink */
+	flex: 1 1 auto;
+	/* Allow growing but can shrink */
 	border-top: none;
 	min-width: 112px;
-	padding: 0; /* Reset Obsidian 1.11+ default padding */
-	margin: 0; /* Reset any margin */
+	padding: 0;
+	/* Reset Obsidian 1.11+ default padding */
+	margin: 0;
+	/* Reset any margin */
 }
 
 .image-converter-global-preset-container .settings-section-title {
@@ -468,8 +431,10 @@ html[data-theme="dark"] {
 	margin-bottom: 0;
 	font-weight: 600;
 	width: 130px;
-	flex-shrink: 0; /* Prevent shrinking */
-	line-height: 1; /* Consistent line height */
+	flex-shrink: 0;
+	/* Prevent shrinking */
+	line-height: 1;
+	/* Consistent line height */
 }
 
 /* Hide empty .setting-item-name in this context */
@@ -479,9 +444,11 @@ html[data-theme="dark"] {
 
 /* Ensure proper vertical alignment with buttons (Obsidian 1.11+ compatibility) */
 .image-converter-global-preset-container .setting-item-info {
-	flex: 1 1 auto; /* Allow info to grow and fill space */
+	flex: 1 1 auto;
+	/* Allow info to grow and fill space */
 	display: flex;
-	flex-direction: row; /* Force row layout */
+	flex-direction: row;
+	/* Force row layout */
 	align-items: center;
 	padding: 0;
 	margin: 0;
@@ -490,21 +457,24 @@ html[data-theme="dark"] {
 .image-converter-global-preset-container .setting-item-description {
 	margin: 0;
 	padding: 0;
-	line-height: 1; /* Match other elements */
+	line-height: 1;
+	/* Match other elements */
 }
 
 .image-converter-global-preset-container .setting-item-control {
 	flex: 0 0 auto;
 	display: flex;
 	align-items: center;
-	margin-left: auto; /* Push dropdown toward the end */
+	margin-left: auto;
+	/* Push dropdown toward the end */
 	padding: 0;
 }
 
 /* Ensure + button stays close to dropdown */
-.image-converter-global-preset-container > button {
+.image-converter-global-preset-container>button {
 	flex: 0 0 auto;
-	margin-left: 0; /* No extra margin, rely on gap */
+	margin-left: 0;
+	/* No extra margin, rely on gap */
 }
 
 /* --- Clickable Toggle Area --- */
@@ -521,8 +491,7 @@ html[data-theme="dark"] {
 }
 
 /* Rotate chevron when collapsed */
-.image-converter-settings-tab:not(.global-presets-visible)
-	.image-converter-chevron-icon {
+.image-converter-settings-tab:not(.global-presets-visible) .image-converter-chevron-icon {
 	transform: rotate(-90deg);
 }
 
@@ -540,9 +509,7 @@ html[data-theme="dark"] {
 }
 
 /* --- Section Header (Clickable Toggle Area) --- */
-.image-converter-settings-tab
-	.image-alignment-settings-section
-	.settings-section-header {
+.image-converter-settings-tab .image-alignment-settings-section .settings-section-header {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -550,34 +517,26 @@ html[data-theme="dark"] {
 	/* padding: 8px 0; */
 }
 
-.image-converter-settings-tab
-	.image-alignment-settings-section
-	.settings-section-title {
+.image-converter-settings-tab .image-alignment-settings-section .settings-section-title {
 	/* flex-grow: 1; */
 	margin-left: 0.5em;
 	font-weight: 600;
 	margin-bottom: 5px;
 }
 
-.image-converter-settings-tab
-	.image-alignment-settings-section
-	.settings-section-toggle-button {
+.image-converter-settings-tab .image-alignment-settings-section .settings-section-toggle-button {
 	margin-left: auto;
 	margin-right: 0;
 }
 
 /* --- Chevron Icon --- */
-.image-converter-settings-tab
-	.image-alignment-settings-section
-	.settings-section-chevron-icon {
+.image-converter-settings-tab .image-alignment-settings-section .settings-section-chevron-icon {
 	margin-right: 5px;
 	transition: transform 0.2s ease;
 }
 
 /* --- HIDE CHEVRON WHEN IMAGE ALIGNMENT IS DISABLED --- */
-.image-converter-settings-tab
-	.image-alignment-settings-section:not(.image-alignment-enabled)
-	.settings-section-chevron-icon {
+.image-converter-settings-tab .image-alignment-settings-section:not(.image-alignment-enabled) .settings-section-chevron-icon {
 	/* Refined selector */
 	display: none;
 	/* Hide chevron when image alignment section is disabled */
@@ -592,9 +551,7 @@ html[data-theme="dark"] {
 }
 
 /* --- Hide Settings when Section is Collapsed --- */
-.image-converter-settings-tab
-	.image-alignment-settings-section.settings-section-collapsed
-	> *:not(.settings-section-header) {
+.image-converter-settings-tab .image-alignment-settings-section.settings-section-collapsed>*:not(.settings-section-header) {
 	display: none;
 }
 
@@ -651,18 +608,14 @@ html[data-theme="dark"] {
 }
 
 /* --- HIDE CHEVRON WHEN IMAGE ALIGNMENT IS DISABLED --- */
-.image-converter-settings-tab
-	.image-drag-resize-settings-section:not(.image-drag-resize-enabled)
-	.settings-section-chevron-icon {
+.image-converter-settings-tab .image-drag-resize-settings-section:not(.image-drag-resize-enabled) .settings-section-chevron-icon {
 	/* Refined selector */
 	display: none;
 	/* Hide chevron when image alignment section is disabled */
 }
 
 /* --- Indentation for Settings within Section --- */
-.image-converter-settings-tab
-	.image-drag-resize-settings-section
-	.setting-item {
+.image-converter-settings-tab .image-drag-resize-settings-section .setting-item {
 	padding-left: 1.5em;
 	border-top: none;
 	margin-top: 0 !important;
@@ -670,9 +623,7 @@ html[data-theme="dark"] {
 }
 
 /* --- Hide Settings when Section is Collapsed --- */
-.image-converter-settings-tab
-	.image-drag-resize-settings-section.settings-section-collapsed
-	> *:not(.settings-section-header) {
+.image-converter-settings-tab .image-drag-resize-settings-section.settings-section-collapsed>*:not(.settings-section-header) {
 	display: none;
 }
 
@@ -681,10 +632,8 @@ html[data-theme="dark"] {
 
 /* --- Hide Tabs and Content --- */
 /* Hide tabs and preset groups when global presets are not visible */
-.image-converter-settings-tab:not(.global-presets-visible)
-	.image-converter-setting-tabs,
-.image-converter-settings-tab:not(.global-presets-visible)
-	.image-converter-tab-content-wrapper {
+.image-converter-settings-tab:not(.global-presets-visible) .image-converter-setting-tabs,
+.image-converter-settings-tab:not(.global-presets-visible) .image-converter-tab-content-wrapper {
 	display: none;
 }
 
@@ -1002,7 +951,7 @@ button.image-converter-encoder-detected:hover,
 	font-size: 0.9em;
 }
 
-.image-converter-format-paths > div {
+.image-converter-format-paths>div {
 	display: flex;
 	align-items: center;
 	margin-bottom: 2px;
@@ -1106,9 +1055,7 @@ button.image-converter-encoder-detected:hover,
 }
 
 /* --- Section Header (Clickable Toggle Area) --- */
-.image-converter-settings-tab
-	.image-caption-settings-section
-	.settings-section-header {
+.image-converter-settings-tab .image-caption-settings-section .settings-section-header {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -1116,34 +1063,26 @@ button.image-converter-encoder-detected:hover,
 	/* padding: 8px 0; */
 }
 
-.image-converter-settings-tab
-	.image-caption-settings-section
-	.settings-section-title {
+.image-converter-settings-tab .image-caption-settings-section .settings-section-title {
 	/* flex-grow: 1; */
 	margin-left: 0.5em;
 	font-weight: 600;
 	margin-bottom: 5px;
 }
 
-.image-converter-settings-tab
-	.image-caption-settings-section
-	.settings-section-toggle-button {
+.image-converter-settings-tab .image-caption-settings-section .settings-section-toggle-button {
 	margin-left: auto;
 	margin-right: 0;
 }
 
 /* --- Chevron Icon --- */
-.image-converter-settings-tab
-	.image-caption-settings-section
-	.settings-section-chevron-icon {
+.image-converter-settings-tab .image-caption-settings-section .settings-section-chevron-icon {
 	margin-right: 5px;
 	transition: transform 0.2s ease;
 }
 
 /* --- HIDE CHEVRON WHEN IMAGE ALIGNMENT IS DISABLED --- */
-.image-converter-settings-tab
-	.image-caption-settings-section:not(.image-caption-enabled)
-	.settings-section-chevron-icon {
+.image-converter-settings-tab .image-caption-settings-section:not(.image-caption-enabled) .settings-section-chevron-icon {
 	/* Refined selector */
 	display: none;
 	/* Hide chevron when image alignment section is disabled */
@@ -1158,9 +1097,7 @@ button.image-converter-encoder-detected:hover,
 }
 
 /* --- Hide Settings when Section is Collapsed --- */
-.image-converter-settings-tab
-	.image-caption-settings-section.settings-section-collapsed
-	> *:not(.settings-section-header) {
+.image-converter-settings-tab .image-caption-settings-section.settings-section-collapsed>*:not(.settings-section-header) {
 	display: none;
 }
 
@@ -1214,6 +1151,7 @@ button.image-converter-encoder-detected:hover,
 	max-width: 100%;
 	height: auto;
 }
+
 /* ----------------------------------------------------------------------- */
 
 /* MODAL WINDOW - each drop */
@@ -1387,14 +1325,18 @@ button.image-converter-encoder-detected:hover,
 	display: flex;
 	align-items: center;
 	gap: 2px;
-	position: relative; /* Added */
+	position: relative;
+	/* Added */
 }
 
 /* New style for labels */
 .image-converter-contextmenu-input-group label {
-	min-width: 53px; /* Fixed width for all labels */
-	text-align: left; /* Right-align the labels */
-	padding-right: 2px; /* Space between label and input */
+	min-width: 53px;
+	/* Fixed width for all labels */
+	text-align: left;
+	/* Right-align the labels */
+	padding-right: 2px;
+	/* Space between label and input */
 }
 
 /* Updated input styles */
@@ -1403,13 +1345,15 @@ button.image-converter-encoder-detected:hover,
 .image-converter-contextmenu-path-input,
 .image-converter-contextmenu-caption-input {
 	flex: 1;
-	min-width: 0; /* Prevents flex items from overflowing */
+	min-width: 0;
+	/* Prevents flex items from overflowing */
 	padding: 4px 8px;
 	border: 1px solid var(--background-modifier-border);
 	border-radius: 4px;
 	background-color: var(--background-secondary);
 	color: var(--text-normal);
-	height: 28px; /* Consistent height */
+	height: 28px;
+	/* Consistent height */
 }
 
 /* Add hover state for inputs */
@@ -1430,14 +1374,15 @@ button.image-converter-encoder-detected:hover,
 	outline: none;
 }
 
-.image-converter-contextmenu-input-group
-	.image-converter-contextmenu-dimensions-input {
+.image-converter-contextmenu-input-group .image-converter-contextmenu-dimensions-input {
 	max-width: 85px;
 }
+
 /* Updated container style */
 .image-converter-contextmenu-info-container {
 	display: grid;
-	grid-template-columns: minmax(200px, 1fr) auto; /* Minimum width for inputs */
+	grid-template-columns: minmax(200px, 1fr) auto;
+	/* Minimum width for inputs */
 	gap: var(--size-4-1);
 	/* padding: 8px;  */
 	cursor: var(--cursor);
@@ -1458,8 +1403,10 @@ button.image-converter-encoder-detected:hover,
 	grid-column: 2;
 	grid-row: 1 / span 4;
 	color: var(--text-normal);
-	width: 28px; /* Fixed width */
-	align-self: stretch; /* Makes button fill entire height */
+	width: 28px;
+	/* Fixed width */
+	align-self: stretch;
+	/* Makes button fill entire height */
 	transition:
 		background-color 0.15s ease,
 		color 0.15s ease;
@@ -1475,7 +1422,8 @@ button.image-converter-encoder-detected:hover,
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 20px; /* Fixed width */
+	width: 20px;
+	/* Fixed width */
 }
 
 /* Add disabled state styles */
@@ -1501,7 +1449,8 @@ button.image-converter-encoder-detected:hover,
 	color: var(--text-normal);
 	height: 28px;
 	appearance: textfield;
-	-moz-appearance: textfield; /* Removes arrows in Firefox */
+	-moz-appearance: textfield;
+	/* Removes arrows in Firefox */
 }
 
 /* Remove arrows from number inputs */
@@ -1512,7 +1461,7 @@ button.image-converter-encoder-detected:hover,
 }
 
 /* Style the multiplication symbol */
-.image-converter-contextmenu-dimension-inputs > span {
+.image-converter-contextmenu-dimension-inputs>span {
 	color: var(--text-muted);
 	font-size: 0.9em;
 }
@@ -1538,8 +1487,7 @@ button.image-converter-encoder-detected:hover,
 	overflow: hidden;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-modal-container {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-modal-container {
 	background-color: var(--background-primary);
 	border-radius: 8px;
 	display: flex;
@@ -1551,8 +1499,7 @@ button.image-converter-encoder-detected:hover,
 	position: relative;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-canvas-container {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-canvas-container {
 	flex: 1;
 	display: flex;
 	justify-content: center;
@@ -1563,17 +1510,14 @@ button.image-converter-encoder-detected:hover,
 	position: relative;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-canvas-container
-	canvas {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-canvas-container canvas {
 	max-width: 100%;
 	max-height: 100%;
 	object-fit: contain;
 }
 
 /* Toolbar styling */
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-annotation-toolbar {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-annotation-toolbar {
 	position: relative;
 	/* Changed from absolute */
 	top: auto;
@@ -1589,9 +1533,7 @@ button.image-converter-encoder-detected:hover,
 	border-radius: var(--radius-m);
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-annotation-toolbar
-	button {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-annotation-toolbar button {
 	background-color: var(--interactive-normal);
 	border: none;
 	padding: 4px 8px;
@@ -1605,8 +1547,7 @@ button.image-converter-encoder-detected:hover,
 	font-size: var(--font-ui-small);
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-preset-buttons {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-preset-buttons {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
@@ -1626,8 +1567,7 @@ button.image-converter-encoder-detected:hover,
 	background: var(--background-primary);
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-preset-color {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-preset-color {
 	width: 16px;
 	height: 16px;
 	border: 1px solid var(--background-modifier-border);
@@ -1651,41 +1591,34 @@ button.image-converter-encoder-detected:hover,
 	white-space: nowrap;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.size-buttons-container {
+.image-converter-annotation-tool-image-annotation-modal .size-buttons-container {
 	display: flex;
 	gap: 27px;
 	margin-top: 8px;
 	margin-bottom: 2px;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.opacity-buttons-container {
+.image-converter-annotation-tool-image-annotation-modal .opacity-buttons-container {
 	display: flex;
 	gap: 8px;
 	margin-top: 8px;
 	margin-bottom: 2px;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-button-group {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-button-group {
 	display: flex;
 	gap: 4px;
 	align-items: center;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-button-group
-	button {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-button-group button {
 	padding: 4px 8px;
 	min-width: 36px;
 	height: 24px;
 	font-size: 12px;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-button-group
-	button.is-active {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-button-group button.is-active {
 	background-color: var(--interactive-accent);
 	color: var(--text-on-accent);
 }
@@ -1697,15 +1630,11 @@ button.image-converter-encoder-detected:hover,
 	margin-bottom: 2px;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.blend-modes-container
-	.dropdown-container {
+.image-converter-annotation-tool-image-annotation-modal .blend-modes-container .dropdown-container {
 	min-width: 100px;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.blend-modes-container
-	.dropdown {
+.image-converter-annotation-tool-image-annotation-modal .blend-modes-container .dropdown {
 	width: 80%;
 	height: 100%;
 }
@@ -1717,45 +1646,33 @@ button.image-converter-encoder-detected:hover,
 	margin-bottom: 2px;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.size-buttons-container
-	.control-label,
-.image-converter-annotation-tool-image-annotation-modal
-	.opacity-buttons-container
-	.control-label,
-.image-converter-annotation-tool-image-annotation-modal
-	.blend-modes-container
-	.control-label,
-.image-converter-annotation-tool-image-annotation-modal
-	.layer-controls
-	.control-label {
+.image-converter-annotation-tool-image-annotation-modal .size-buttons-container .control-label,
+.image-converter-annotation-tool-image-annotation-modal .opacity-buttons-container .control-label,
+.image-converter-annotation-tool-image-annotation-modal .blend-modes-container .control-label,
+.image-converter-annotation-tool-image-annotation-modal .layer-controls .control-label {
 	margin-top: auto;
 	margin-bottom: auto;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-color-swatches {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-color-swatches {
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
 	padding: 8px;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-color-row {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-color-row {
 	display: flex;
 	align-items: center;
 	gap: 8px;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-row-label {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-row-label {
 	font-size: 12px;
 	min-width: 70px;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-swatches-container {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-swatches-container {
 	display: flex;
 	gap: 8px;
 }
@@ -1804,14 +1721,11 @@ button.image-converter-encoder-detected:hover,
 	width: 54px;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.background-dropdown.background-dropdown-hidden {
+.image-converter-annotation-tool-image-annotation-modal .background-dropdown.background-dropdown-hidden {
 	display: none;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.background-dropdown
-	.background-option {
+.image-converter-annotation-tool-image-annotation-modal .background-dropdown .background-option {
 	display: flex;
 	align-items: center;
 	padding: 6px 8px;
@@ -1881,8 +1795,7 @@ button.image-converter-encoder-detected:hover,
 	z-index: 100;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.modal-resize-handle.resize-grip-icon::before {
+.image-converter-annotation-tool-image-annotation-modal .modal-resize-handle.resize-grip-icon::before {
 	content: "";
 	width: 8px;
 	height: 8px;
@@ -1894,8 +1807,7 @@ button.image-converter-encoder-detected:hover,
 	user-select: none;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-canvas-container {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-canvas-container {
 	transition:
 		width 0.1s ease,
 		height 0.1s ease;
@@ -1906,8 +1818,7 @@ button.image-converter-encoder-detected:hover,
 }
 
 /* Add checkerboard pattern for transparent areas */
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-canvas-container::before {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-canvas-container::before {
 	content: "";
 	position: absolute;
 	top: 0;
@@ -1915,26 +1826,18 @@ button.image-converter-encoder-detected:hover,
 	right: 0;
 	bottom: 0;
 	background-image:
-		linear-gradient(
-			45deg,
+		linear-gradient(45deg,
 			var(--background-modifier-border) 25%,
-			transparent 25%
-		),
-		linear-gradient(
-			-45deg,
+			transparent 25%),
+		linear-gradient(-45deg,
 			var(--background-modifier-border) 25%,
-			transparent 25%
-		),
-		linear-gradient(
-			45deg,
+			transparent 25%),
+		linear-gradient(45deg,
 			transparent 75%,
-			var(--background-modifier-border) 75%
-		),
-		linear-gradient(
-			-45deg,
+			var(--background-modifier-border) 75%),
+		linear-gradient(-45deg,
 			transparent 75%,
-			var(--background-modifier-border) 75%
-		);
+			var(--background-modifier-border) 75%);
 	background-size: 20px 20px;
 	background-position:
 		0 0,
@@ -1947,30 +1850,22 @@ button.image-converter-encoder-detected:hover,
 }
 
 /* Hover states */
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-annotation-toolbar
-	button:hover {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-annotation-toolbar button:hover {
 	background-color: var(--interactive-hover);
 }
 
 /* Active state for buttons */
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-annotation-toolbar
-	button.is-active {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-annotation-toolbar button.is-active {
 	background-color: var(--interactive-accent);
 	color: var(--text-on-accent);
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-annotation-toolbar
-	button
-	svg {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-annotation-toolbar button svg {
 	width: 16px;
 	height: 16px;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.annotation-toolbar-group {
+.image-converter-annotation-tool-image-annotation-modal .annotation-toolbar-group {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 4px;
@@ -1979,9 +1874,7 @@ button.image-converter-encoder-detected:hover,
 	/* Remove fixed width */
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-annotation-toolbar
-	input[type="color"] {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-annotation-toolbar input[type="color"] {
 	width: 30px;
 	height: 30px;
 	padding: 0;
@@ -1990,20 +1883,17 @@ button.image-converter-encoder-detected:hover,
 	cursor: pointer;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.annotation-toolbar-group:last-child {
+.image-converter-annotation-tool-image-annotation-modal .annotation-toolbar-group:last-child {
 	border-right: none;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-left-section {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-left-section {
 	display: flex;
 	/* align-items: center; */
 	gap: 8px;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-drawing-tools-column {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-drawing-tools-column {
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
@@ -2021,15 +1911,13 @@ button.image-converter-encoder-detected:hover,
 	align-items: center;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-color-picker-wrapper {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-color-picker-wrapper {
 	display: flex;
 	/* align-items: center; */
 	padding: 2px;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-background-color-wrapper {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-background-color-wrapper {
 	display: flex;
 	align-items: center;
 }
@@ -2042,18 +1930,14 @@ button.image-converter-encoder-detected:hover,
     padding: 0;
 } */
 
-.image-converter-annotation-tool-image-annotation-modal
-	.preset-button
-	.image-converter-annotation-tool-preset-color {
+.image-converter-annotation-tool-image-annotation-modal .preset-button .image-converter-annotation-tool-preset-color {
 	width: 20px;
 	height: 20px;
 	border-radius: 10px;
 	transition: all 0.2s ease;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.preset-button.text-preset
-	.image-converter-annotation-tool-preset-color {
+.image-converter-annotation-tool-image-annotation-modal .preset-button.text-preset .image-converter-annotation-tool-preset-color {
 	position: relative;
 	border-style: solid;
 	border-width: 2px;
@@ -2069,19 +1953,16 @@ button.image-converter-encoder-detected:hover,
 	cursor: pointer;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.color-picker::-webkit-color-swatch-wrapper {
+.image-converter-annotation-tool-image-annotation-modal .color-picker::-webkit-color-swatch-wrapper {
 	padding: 0;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.color-picker::-webkit-color-swatch {
+.image-converter-annotation-tool-image-annotation-modal .color-picker::-webkit-color-swatch {
 	border: none;
 	border-radius: var(--radius-s);
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.color-picker::-moz-color-swatch {
+.image-converter-annotation-tool-image-annotation-modal .color-picker::-moz-color-swatch {
 	border: 2px solid var(--background-modifier-border);
 	border-radius: var(--radius-s);
 }
@@ -2090,16 +1971,14 @@ button.image-converter-encoder-detected:hover,
 	opacity: 0.8;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.annotation-toolbar-group {
+.image-converter-annotation-tool-image-annotation-modal .annotation-toolbar-group {
 	display: flex;
 	gap: 4px;
 	padding: 0 8px;
 	border-right: 1px solid var(--background-modifier-border);
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.annotation-toolbar-group:last-child {
+.image-converter-annotation-tool-image-annotation-modal .annotation-toolbar-group:last-child {
 	border-right: none;
 }
 
@@ -2113,57 +1992,42 @@ button.image-converter-encoder-detected:hover,
 	cursor: not-allowed;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-canvas-container {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-canvas-container {
 	position: relative;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-canvas-container
-	textarea {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-canvas-container textarea {
 	position: absolute;
 	pointer-events: auto;
 }
 
 /* Optional: Add hover effect for delete icon */
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-canvas-container:hover
-	.delete-icon {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-canvas-container:hover .delete-icon {
 	opacity: 1;
 }
 
 /* Save button styling */
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-annotation-toolbar
-	button.mod-cta {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-annotation-toolbar button.mod-cta {
 	background-color: var(--interactive-accent);
 	color: var(--text-on-accent);
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-annotation-toolbar
-	button.mod-cta:hover {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-annotation-toolbar button.mod-cta:hover {
 	background-color: var(--interactive-accent-hover);
 }
 
 /* Mobile-specific adjustments */
 @media (max-width: 768px) {
-	.image-converter-annotation-tool-image-annotation-modal
-		.image-converter-annotation-tool-annotation-toolbar {
+	.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-annotation-toolbar {
 		padding: 4px;
 		gap: 4px;
 	}
 
-	.image-converter-annotation-tool-image-annotation-modal
-		.image-converter-annotation-tool-annotation-toolbar
-		button {
+	.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-annotation-toolbar button {
 		padding: 6px;
 	}
 
-	.image-converter-annotation-tool-image-annotation-modal
-		.image-converter-annotation-tool-annotation-toolbar
-		button
-		svg {
+	.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-annotation-toolbar button svg {
 		width: 14px;
 		height: 14px;
 	}
@@ -2179,8 +2043,7 @@ button.image-converter-encoder-detected:hover,
 	}
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-control-group {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-control-group {
 	display: flex;
 	gap: 5px;
 	margin-top: 8px;
@@ -2188,25 +2051,21 @@ button.image-converter-encoder-detected:hover,
 	align-items: center;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.text-background-controls {
+.image-converter-annotation-tool-image-annotation-modal .text-background-controls {
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.text-background-controls.is-hidden {
+.image-converter-annotation-tool-image-annotation-modal .text-background-controls.is-hidden {
 	display: none;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-preset-buttons.is-hidden {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-preset-buttons.is-hidden {
 	display: none;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.image-converter-annotation-tool-preset-color.no-border {
+.image-converter-annotation-tool-image-annotation-modal .image-converter-annotation-tool-preset-color.no-border {
 	border: none;
 }
 
@@ -2218,8 +2077,7 @@ button.image-converter-encoder-detected:hover,
 	align-items: center;
 }
 
-.image-converter-annotation-tool-image-annotation-modal
-	.background-color-picker {
+.image-converter-annotation-tool-image-annotation-modal .background-color-picker {
 	width: 24px;
 	height: 24px;
 	padding: 0;
@@ -2670,7 +2528,8 @@ button.image-converter-encoder-detected:hover,
 /* Style for external images when resizing is active */
 .image-resize-border.resizing {
 	cursor: grabbing !important;
-	user-select: none; /* Prevent accidental text selection */
+	user-select: none;
+	/* Prevent accidental text selection */
 }
 
 /* Style for internal image container when resizing is active */
@@ -2811,27 +2670,35 @@ button.image-converter-encoder-detected:hover,
 
 /* General styles for image positioning (using flexbox) - apply to containers */
 .image-position-left {
-	justify-content: flex-start; /* Align to the left */
+	justify-content: flex-start;
+	/* Align to the left */
 }
 
 .image-position-center {
-	justify-content: center; /* Align to the center */
+	justify-content: center;
+	/* Align to the center */
 }
 
 .image-position-right {
-	justify-content: flex-end; /* Align to the right */
+	justify-content: flex-end;
+	/* Align to the right */
 }
 
 /* General styles for wrapping - apply to containers */
 .image-wrap {
-	float: left; /* Allow text to wrap.  Apply to the image itself. */
-	margin-right: 10px; /* Add spacing. Apply to the image. */
-	clear: left; /* Ensure it clears previous floats.  Apply to the image. */
+	float: left;
+	/* Allow text to wrap.  Apply to the image itself. */
+	margin-right: 10px;
+	/* Add spacing. Apply to the image. */
+	clear: left;
+	/* Ensure it clears previous floats.  Apply to the image. */
 }
 
 .image-no-wrap {
-	float: none; /* Prevent text wrapping. Apply to the image itself. */
-	clear: both; /* Clear any previous floats */
+	float: none;
+	/* Prevent text wrapping. Apply to the image itself. */
+	clear: both;
+	/* Clear any previous floats */
 }
 
 /* Styles for internal embeds to control alignment without affecting image size */
@@ -2849,9 +2716,11 @@ button.image-converter-encoder-detected:hover,
 
 /* ===== Live Preview Specific Styles ===== */
 .markdown-source-view.mod-cm6 {
+
 	/* Left alignment WITH wrapping */
 	.image-wrap.image-position-left .image-wrap.image-position-left {
-		float: left !important; /* !important to override Obsidian */
+		float: left !important;
+		/* !important to override Obsidian */
 		margin: 0 1em 0.5em 0 !important;
 		clear: left !important;
 		/* position: relative !important;  to allow right-click and allow it to be above any other content
@@ -2910,6 +2779,7 @@ button.image-converter-encoder-detected:hover,
 
 /* ------------------------ Reading Mode Styles --------------------------------------*/
 .markdown-reading-view {
+
 	/* Left alignment WITH wrapping */
 	.image-wrap.image-position-left {
 		float: left !important;
@@ -3225,7 +3095,8 @@ button.image-converter-encoder-detected:hover,
 	background-repeat: no-repeat !important;
 	background-position: right 6px center !important;
 	background-size: 12px !important;
-	padding-right: 24px !important; /* Make room for our custom arrow */
+	padding-right: 24px !important;
+	/* Make room for our custom arrow */
 }
 
 /* Fallback for custom arrow if Obsidian doesn't provide the icon variable */
@@ -3274,7 +3145,7 @@ button.image-converter-encoder-detected:hover,
 }
 
 /* Override default Obsidian setting-item spacing */
-.image-converter-input-row .setting-item > *:first-child {
+.image-converter-input-row .setting-item>*:first-child {
 	margin-inline-end: 0 !important;
 }
 
@@ -3556,7 +3427,8 @@ button.image-converter-encoder-detected:hover,
 		max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
 		opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
 		padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	max-height: 500px; /* Large enough to accommodate content */
+	max-height: 500px;
+	/* Large enough to accommodate content */
 	opacity: 1;
 }
 
@@ -3781,12 +3653,8 @@ button.image-converter-encoder-detected:hover,
 /* ============================================ */
 
 /* Hide setting name and description elements in preset selection modal */
-.image-converter-preset-selection-modal
-	.image-converter-hide-name-desc
-	.setting-item-name,
-.image-converter-preset-selection-modal
-	.image-converter-hide-name-desc
-	.setting-item-description {
+.image-converter-preset-selection-modal .image-converter-hide-name-desc .setting-item-name,
+.image-converter-preset-selection-modal .image-converter-hide-name-desc .setting-item-description {
 	display: none !important;
 }
 
@@ -3829,6 +3697,7 @@ button.image-converter-encoder-detected:hover,
 
 /* Small screens - adjust dropdown layout */
 @media (max-width: 400px) {
+
 	/* Make the first row stack vertically on very small screens */
 	.image-converter-label-dropdown-row {
 		flex-direction: column;
@@ -3866,5 +3735,28 @@ button.image-converter-encoder-detected:hover,
 
 	.image-converter-group-label {
 		font-size: 0.9em;
+	}
+}
+
+/***************
+***CUSTOM*******
+***************/
+
+
+
+.crop-container,
+.crop-original-image,
+.selection-area,
+.resize-handle {
+	touch-action: none;
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+/* Optional: make handles easier to grab on touchscreens */
+@media (pointer: coarse) {
+	.resize-handle {
+		width: 22px;
+		height: 22px;
 	}
 }
