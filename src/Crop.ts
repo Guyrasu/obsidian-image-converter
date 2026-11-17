@@ -60,95 +60,114 @@ export class Crop extends Modal {
 		return e.pointerType !== 'mouse' || e.button === 0;
 	}
 
+	private getEventCoords(e: MouseEvent | TouchEvent): { clientX: number; clientY: number } | null {
+		if ('touches' in e) {
+			const touch = e.touches[0] || e.changedTouches[0];
+			return touch ? { clientX: touch.clientX, clientY: touch.clientY } : null;
+		}
+		return { clientX: e.clientX, clientY: e.clientY };
+	}
+
 	private setupEventListeners() {
-		this.componentContainer.registerDomEvent(this.cropContainer, 'pointerdown', (e: PointerEvent) => {
-			if (e.target === this.originalImage) {
-				// Middle button - panning (desktop mouse)
-				if (e.type === 'mouse' && e.button === 1) {
-					e.preventDefault();
-					this.isPanning = true;
-					this.panStartX = e.clientX;
-					this.panStartY = e.clientY;
-					this.cropContainer.setPointerCapture(e.pointerId);
-					return;
-				}
-
-				// Left button or touch/pen - start drawing selection
-				if (this.isPrimaryPointer(e)) {
-					e.preventDefault();
-					this.isDrawing = true;
-					this.cropContainer.setPointerCapture(e.pointerId);
-					const rect = this.cropContainer.getBoundingClientRect();
-					this.startX = e.clientX - rect.left;
-					this.startY = e.clientY - rect.top;
-
-					this.selectionArea.setCssStyles({
-						display: 'block',
-						left: `${this.startX}px`,
-						top: `${this.startY}px`,
-						width: '0',
-						height: '0'
-					});
-				}
-			}
+		// Prevent Obsidian Mobile's modal sheet from dragging/swiping when touching inside the crop area
+		const blockModalSwipe = (e: TouchEvent) => {
+			if (e.cancelable) e.preventDefault();
+			e.stopPropagation();
+		};
+		this.cropContainer.addEventListener('touchstart', blockModalSwipe, { passive: false });
+		this.cropContainer.addEventListener('touchmove', blockModalSwipe, { passive: false });
+		this.componentContainer.register(() => {
+			this.cropContainer.removeEventListener('touchstart', blockModalSwipe);
+			this.cropContainer.removeEventListener('touchmove', blockModalSwipe);
 		});
 
-		// Pointer move - update selection size or pan image
-		this.componentContainer.registerDomEvent(this.cropContainer, 'pointermove', (e: PointerEvent) => {
-			if (this.isPanning) {
-				// Image panning
+		const onStart = (e: MouseEvent | TouchEvent) => {
+			const isTouch = 'touches' in e;
+			if (!isTouch && e.button === 1 && e.target === this.originalImage) {
 				e.preventDefault();
-				const deltaX = e.clientX - this.panStartX;
-				const deltaY = e.clientY - this.panStartY;
-				this.currentPanX += deltaX;
-				this.currentPanY += deltaY;
+				this.isPanning = true;
 				this.panStartX = e.clientX;
 				this.panStartY = e.clientY;
-				this.applyTransforms();
+				return;
 			}
-			else if (this.isDrawing) {
-				// Change selection size area
-				const rect = this.cropContainer.getBoundingClientRect();
-				const currentX = e.clientX - rect.left;
-				const currentY = e.clientY - rect.top;
-				this.updateSelectionSize(currentX, currentY);
-			}
-		});
 
-		const finishContainerInteraction = (e: PointerEvent) => {
-			if (this.cropContainer.hasPointerCapture(e.pointerId)) {
-				this.cropContainer.releasePointerCapture(e.pointerId);
-			}
+			if (!isTouch && e.button !== 0) return;
+			if (e.target !== this.originalImage) return;
+
+			const coords = this.getEventCoords(e);
+			if (!coords) return;
+
+			if (e.cancelable) e.preventDefault();
+			e.stopPropagation();
+
+			this.isDrawing = true;
+			const rect = this.cropContainer.getBoundingClientRect();
+			this.startX = coords.clientX - rect.left;
+			this.startY = coords.clientY - rect.top;
+
+			this.selectionArea.setCssStyles({
+				display: 'block',
+				left: `${this.startX}px`,
+				top: `${this.startY}px`,
+				width: '0',
+				height: '0'
+			});
+		};
+
+		const onMove = (e: MouseEvent | TouchEvent) => {
+			if (!this.isPanning && !this.isDrawing) return;
+			const coords = this.getEventCoords(e);
+			if (!coords) return;
+
+			if (e.cancelable) e.preventDefault();
+			e.stopPropagation();
 
 			if (this.isPanning) {
-				this.isPanning = false;
+				const deltaX = coords.clientX - this.panStartX;
+				const deltaY = coords.clientY - this.panStartY;
+				this.currentPanX += deltaX;
+				this.currentPanY += deltaY;
+				this.panStartX = coords.clientX;
+				this.panStartY = coords.clientY;
+				this.applyTransforms();
 			} else if (this.isDrawing) {
+				const rect = this.cropContainer.getBoundingClientRect();
+				const currentX = coords.clientX - rect.left;
+				const currentY = coords.clientY - rect.top;
+				this.updateSelectionSize(currentX, currentY);
+			}
+		};
+
+		const onEnd = (e: MouseEvent | TouchEvent) => {
+			const isTouch = 'touches' in e;
+			if (!isTouch && e.button === 1 && this.isPanning) {
+				this.isPanning = false;
+				return;
+			}
+			if ((isTouch || e.button === 0) && this.isDrawing) {
 				this.isDrawing = false;
+				// Ignore accidental 0x0 taps so the screen doesn't stay darkened with a dot
+				if (this.selectionArea.offsetWidth < 5 || this.selectionArea.offsetHeight < 5) {
+					this.selectionArea.setCssStyles({ display: 'none' });
+					return;
+				}
 				this.makeSelectionMovable();
 			}
 		};
 
-		// Pointer up / cancel - finish drawing selection or panning
-		this.componentContainer.registerDomEvent(this.cropContainer, 'pointerup', finishContainerInteraction);
-		this.componentContainer.registerDomEvent(this.cropContainer, 'pointercancel', finishContainerInteraction);
+		this.componentContainer.registerDomEvent(this.cropContainer, 'mousedown', onStart);
+		this.componentContainer.registerDomEvent(document, 'mousemove', onMove);
+		this.componentContainer.registerDomEvent(document, 'mouseup', onEnd);
 
-		// // Mouse up - finish drawing selection
-		// this.componentContainer.registerDomEvent(this.cropContainer, 'mouseup', (e: MouseEvent) => {
-		// 	// Middle button - stop panning
-		// 	if (e.button === 1 && this.isPanning) {
-		// 		this.isPanning = false;
-		// 	}
-		// 	// Left button - finish drawing selection
-		// 	else if (e.button === 0 && this.isDrawing) {
-		// 		this.isDrawing = false;
-		// 		this.makeSelectionMovable();
-		// 	}
-		// });
-
-		// Prevent selection from getting stuck if mouse leaves the container
-		this.componentContainer.registerDomEvent(this.cropContainer, 'mouseleave', (e: MouseEvent) => {
-			this.isDrawing = false;
-			this.isPanning = false;
+		this.cropContainer.addEventListener('touchstart', onStart, { passive: false });
+		document.addEventListener('touchmove', onMove, { passive: false });
+		document.addEventListener('touchend', onEnd);
+		document.addEventListener('touchcancel', onEnd);
+		this.componentContainer.register(() => {
+			this.cropContainer.removeEventListener('touchstart', onStart);
+			document.removeEventListener('touchmove', onMove);
+			document.removeEventListener('touchend', onEnd);
+			document.removeEventListener('touchcancel', onEnd);
 		});
 	}
 
@@ -553,8 +572,10 @@ export class Crop extends Modal {
 	}
 
 	private makeSelectionMovable() {
-		this.addResizeHandles();
-		this.setupResizeHandlers();
+		if (this.selectionArea.querySelectorAll('.resize-handle').length === 0) {
+			this.addResizeHandles();
+			this.setupResizeHandlers();
+		}
 
 		let isDragging = false;
 		let dragStartX = 0;
@@ -562,60 +583,69 @@ export class Crop extends Modal {
 		let initialLeft = 0;
 		let initialTop = 0;
 
-		this.componentContainer.registerDomEvent(this.selectionArea, 'pointerdown', (e: PointerEvent) => {
-			if (!this.isPrimaryPointer(e)) return;
-			e.stopPropagation(); // Prevent container's pointerdown from firing
-			e.preventDefault();
-			isDragging = true;
-			this.selectionArea.setPointerCapture(e.pointerId);
+		const onDragStart = (e: MouseEvent | TouchEvent) => {
+			if (!('touches' in e) && e.button !== 0) return;
+			const coords = this.getEventCoords(e);
+			if (!coords) return;
 
-			// Store the initial positions
+			if (e.cancelable) e.preventDefault();
+			e.stopPropagation();
+			isDragging = true;
+
 			initialLeft = parseInt(this.selectionArea.style.left) || 0;
 			initialTop = parseInt(this.selectionArea.style.top) || 0;
-			dragStartX = e.clientX;
-			dragStartY = e.clientY;
+			dragStartX = coords.clientX;
+			dragStartY = coords.clientY;
 
 			this.selectionArea.setCssStyles({ cursor: 'move' });
-		});
+		};
 
-		this.componentContainer.registerDomEvent(document, 'pointermove', (e: PointerEvent) => {
+		const onDragMove = (e: MouseEvent | TouchEvent) => {
 			if (!isDragging) return;
-			e.preventDefault();
+			const coords = this.getEventCoords(e);
+			if (!coords) return;
 
-			// Calculate the distance moved from the start position
-			const deltaX = e.clientX - dragStartX;
-			const deltaY = e.clientY - dragStartY;
+			if (e.cancelable) e.preventDefault();
+			e.stopPropagation();
 
-			// Calculate new positions
+			const deltaX = coords.clientX - dragStartX;
+			const deltaY = coords.clientY - dragStartY;
+
 			let newLeft = initialLeft + deltaX;
 			let newTop = initialTop + deltaY;
 
-			// Get container boundaries
 			const containerRect = this.cropContainer.getBoundingClientRect();
 			const selectionRect = this.selectionArea.getBoundingClientRect();
 
-			// Constrain to container boundaries
 			newLeft = Math.max(0, Math.min(newLeft, containerRect.width - selectionRect.width));
 			newTop = Math.max(0, Math.min(newTop, containerRect.height - selectionRect.height));
 
-			// Apply new position
 			this.selectionArea.setCssStyles({
 				left: `${newLeft}px`,
 				top: `${newTop}px`
 			});
-		});
+		};
 
-		const stopDragging = (e: PointerEvent) => {
+		const onDragEnd = () => {
 			if (!isDragging) return;
-			if (this.selectionArea.hasPointerCapture(e.pointerId)) {
-				this.selectionArea.releasePointerCapture(e.pointerId);
-			}
 			isDragging = false;
 			this.selectionArea.setCssStyles({ cursor: 'move' });
 		};
 
-		this.componentContainer.registerDomEvent(document, 'pointerup', stopDragging);
-		this.componentContainer.registerDomEvent(document, 'pointercancel', stopDragging);
+		this.componentContainer.registerDomEvent(this.selectionArea, 'mousedown', onDragStart);
+		this.componentContainer.registerDomEvent(document, 'mousemove', onDragMove);
+		this.componentContainer.registerDomEvent(document, 'mouseup', onDragEnd);
+
+		this.selectionArea.addEventListener('touchstart', onDragStart, { passive: false });
+		document.addEventListener('touchmove', onDragMove, { passive: false });
+		document.addEventListener('touchend', onDragEnd);
+		document.addEventListener('touchcancel', onDragEnd);
+		this.componentContainer.register(() => {
+			this.selectionArea.removeEventListener('touchstart', onDragStart);
+			document.removeEventListener('touchmove', onDragMove);
+			document.removeEventListener('touchend', onDragEnd);
+			document.removeEventListener('touchcancel', onDragEnd);
+		});
 	}
 
 	// Add this method to handle aspect ratio constraints during drawing
@@ -700,7 +730,6 @@ export class Crop extends Modal {
 	private setupResizeHandlers() {
 		let isResizing = false;
 		let currentHandle: string | null = null;
-		let activeHandleEl: HTMLElement | null = null;
 		let startX = 0;
 		let startY = 0;
 		let startWidth = 0;
@@ -711,39 +740,48 @@ export class Crop extends Modal {
 		const handles = this.selectionArea.querySelectorAll('.resize-handle');
 
 		handles.forEach(handle => {
-			this.componentContainer.registerDomEvent(handle as HTMLElement, 'pointerdown', (e: PointerEvent) => {
-				if (!this.isPrimaryPointer(e)) return;
-				e.stopPropagation(); // Prevent dragging from starting
-				e.preventDefault();
+			const el = handle as HTMLElement;
+			const onResizeStart = (e: MouseEvent | TouchEvent) => {
+				if (!('touches' in e) && e.button !== 0) return;
+				const coords = this.getEventCoords(e);
+				if (!coords) return;
+
+				if (e.cancelable) e.preventDefault();
+				e.stopPropagation();
+
 				isResizing = true;
-				activeHandleEl = handle as HTMLElement;
-				activeHandleEl.setPointerCapture(e.pointerId);
+				const [, handleClass] = el.className.split(' ');
+				[currentHandle] = handleClass.split('-');
 
-				const [, handleClass] = handle.className.split(' ');
-				[currentHandle] = handleClass.split('-'); // Get position (nw, n, ne, etc.)
-
-				startX = e.clientX;
-				startY = e.clientY;
+				startX = coords.clientX;
+				startY = coords.clientY;
 				startWidth = this.selectionArea.offsetWidth;
 				startHeight = this.selectionArea.offsetHeight;
 				startLeft = this.selectionArea.offsetLeft;
 				startTop = this.selectionArea.offsetTop;
-			});
+			};
+
+			this.componentContainer.registerDomEvent(el, 'mousedown', onResizeStart);
+			el.addEventListener('touchstart', onResizeStart, { passive: false });
+			this.componentContainer.register(() => el.removeEventListener('touchstart', onResizeStart));
 		});
 
-		this.componentContainer.registerDomEvent(document, 'pointermove', (e: PointerEvent) => {
+		const onResizeMove = (e: MouseEvent | TouchEvent) => {
 			if (!isResizing) return;
-			e.preventDefault();
+			const coords = this.getEventCoords(e);
+			if (!coords) return;
 
-			const deltaX = e.clientX - startX;
-			const deltaY = e.clientY - startY;
+			if (e.cancelable) e.preventDefault();
+			e.stopPropagation();
+
+			const deltaX = coords.clientX - startX;
+			const deltaY = coords.clientY - startY;
 
 			let newWidth = startWidth;
 			let newHeight = startHeight;
 			let newLeft = startLeft;
 			let newTop = startTop;
 
-			// Calculate new dimensions based on which handle is being dragged
 			switch (currentHandle) {
 				case 'se':
 					newWidth = startWidth + deltaX;
@@ -805,34 +843,37 @@ export class Crop extends Modal {
 					break;
 			}
 
-			// Constrain to container boundaries
 			const containerRect = this.cropContainer.getBoundingClientRect();
 			newWidth = Math.max(20, Math.min(newWidth, containerRect.width - newLeft));
 			newHeight = Math.max(20, Math.min(newHeight, containerRect.height - newTop));
 			newLeft = Math.max(0, Math.min(newLeft, containerRect.width - newWidth));
 			newTop = Math.max(0, Math.min(newTop, containerRect.height - newHeight));
 
-			// Apply new dimensions
 			this.selectionArea.setCssStyles({
 				width: `${newWidth}px`,
 				height: `${newHeight}px`,
 				left: `${newLeft}px`,
 				top: `${newTop}px`
 			});
-		});
-
-		const stopResizing = (e: PointerEvent) => {
-			if (!isResizing) return;
-			if (activeHandleEl?.hasPointerCapture(e.pointerId)) {
-				activeHandleEl.releasePointerCapture(e.pointerId);
-			}
-			isResizing = false;
-			currentHandle = null;
-			activeHandleEl = null;
 		};
 
-		this.componentContainer.registerDomEvent(document, 'pointerup', stopResizing);
-		this.componentContainer.registerDomEvent(document, 'pointercancel', stopResizing);
+		const onResizeEnd = () => {
+			if (!isResizing) return;
+			isResizing = false;
+			currentHandle = null;
+		};
+
+		this.componentContainer.registerDomEvent(document, 'mousemove', onResizeMove);
+		this.componentContainer.registerDomEvent(document, 'mouseup', onResizeEnd);
+
+		document.addEventListener('touchmove', onResizeMove, { passive: false });
+		document.addEventListener('touchend', onResizeEnd);
+		document.addEventListener('touchcancel', onResizeEnd);
+		this.componentContainer.register(() => {
+			document.removeEventListener('touchmove', onResizeMove);
+			document.removeEventListener('touchend', onResizeEnd);
+			document.removeEventListener('touchcancel', onResizeEnd);
+		});
 	}
 
 

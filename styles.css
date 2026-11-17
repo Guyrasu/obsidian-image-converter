@@ -3760,3 +3760,17 @@ button.image-converter-encoder-detected:hover,
 		height: 22px;
 	}
 }
+
+
+.crop-tool-modal .modal,
+.crop-modal-wrapper,
+.crop-modal-content,
+.crop-container,
+.crop-original-image,
+.selection-area,
+.resize-handle {
+	touch-action: none;
+	overscroll-behavior: contain;
+	-webkit-user-select: none;
+	user-select: none;
+}
