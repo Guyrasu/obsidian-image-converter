@@ -1,3 +1,7 @@
+# My Modifications
+
+I just know the basics of programming, I used AI to help me to add crop with 1 finger and zoom and pan with 2 fingers in the plugin, that is it.
+
 # Image Converter for ObsidianMD
 
 Making image management inside Obsidian slightly more convenient.
