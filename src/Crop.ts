@@ -353,7 +353,6 @@ export class Crop extends Modal {
 
 		const isMobile = Platform.isMobile || window.innerWidth <= 768;
 
-		// clientWidth / clientHeight always match the actual CSS layout viewport on Android WebView
 		const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
 		const viewportHeight = document.documentElement.clientHeight || window.innerHeight;
 
@@ -365,16 +364,7 @@ export class Crop extends Modal {
 			const maxWidth = viewportWidth - (this.MODAL_PADDING * 2);
 			const maxHeight = viewportHeight - (this.MODAL_PADDING * 2);
 
-			const headerEl = modalElement.querySelector('.crop-modal-header') as HTMLElement | null;
-			const buttonsEl = modalElement.querySelector('.crop-modal-buttons') as HTMLElement | null;
-			const actualChromeHeight = (headerEl && buttonsEl && (headerEl.offsetHeight + buttonsEl.offsetHeight) > 0)
-				? headerEl.offsetHeight + buttonsEl.offsetHeight + 24
-				: this.CHROME_HEIGHT;
-
-			const modalWidth = maxWidth;
-			const modalHeight = Math.min(maxHeight, (modalWidth / imgAspectRatio) + actualChromeHeight);
-
-			// Clear manual offsets so CSS flex centering on .modal-container handles positioning cleanly
+			// First apply max width so the header wraps to its real height before measuring
 			modalElement.setCssStyles({
 				position: 'relative',
 				top: 'auto',
@@ -383,11 +373,54 @@ export class Crop extends Modal {
 				bottom: 'auto',
 				transform: 'none',
 				margin: 'auto',
-				width: `${modalWidth}px`,
+				width: `${maxWidth}px`,
 				maxWidth: `${maxWidth}px`,
-				height: `${modalHeight}px`,
 				maxHeight: `${maxHeight}px`
 			});
+
+			const headerEl = modalElement.querySelector('.crop-modal-header') as HTMLElement | null;
+			const buttonsEl = modalElement.querySelector('.crop-modal-buttons') as HTMLElement | null;
+			const modalPadding = 20; // 10px top + 10px bottom
+			const headerHeight = headerEl?.offsetHeight ?? 0;
+			const buttonsHeight = buttonsEl?.offsetHeight ?? 0;
+			const actualChromeHeight = (headerHeight + buttonsHeight > 0)
+				? headerHeight + buttonsHeight + modalPadding + 16
+				: this.CHROME_HEIGHT;
+
+			const availableWidth = maxWidth - modalPadding;
+			const availableHeight = Math.max(120, maxHeight - actualChromeHeight);
+
+			// Fit the image completely inside (availableWidth x availableHeight) preserving aspect ratio
+			let fittedWidth = availableWidth;
+			let fittedHeight = fittedWidth / imgAspectRatio;
+
+			if (fittedHeight > availableHeight) {
+				fittedHeight = availableHeight;
+				fittedWidth = fittedHeight * imgAspectRatio;
+			}
+
+			// Size both the image and cropContainer to the exact fitted dimensions
+			this.originalImage.setCssStyles({
+				width: `${Math.floor(fittedWidth)}px`,
+				height: `${Math.floor(fittedHeight)}px`,
+				maxWidth: '100%',
+				maxHeight: '100%'
+			});
+
+			this.cropContainer.setCssStyles({
+				width: `${Math.floor(fittedWidth)}px`,
+				height: `${Math.floor(fittedHeight)}px`
+			});
+
+			// Fit modal height tightly to header + fitted image + buttons
+			const finalModalHeight = Math.min(maxHeight, Math.floor(fittedHeight) + actualChromeHeight);
+			modalElement.setCssStyles({
+				height: `${finalModalHeight}px`
+			});
+
+			// Recompute imageScale based on the new rendered dimensions
+			this.imageScale.x = this.originalImage.naturalWidth / this.originalImage.clientWidth;
+			this.imageScale.y = this.originalImage.naturalHeight / this.originalImage.clientHeight;
 			return;
 		}
 
