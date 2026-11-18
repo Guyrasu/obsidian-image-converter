@@ -69,18 +69,6 @@ export class Crop extends Modal {
 	}
 
 	private setupEventListeners() {
-		// Prevent Obsidian Mobile's modal sheet from dragging/swiping when touching inside the crop area
-		const blockModalSwipe = (e: TouchEvent) => {
-			if (e.cancelable) e.preventDefault();
-			e.stopPropagation();
-		};
-		this.cropContainer.addEventListener('touchstart', blockModalSwipe, { passive: false });
-		this.cropContainer.addEventListener('touchmove', blockModalSwipe, { passive: false });
-		this.componentContainer.register(() => {
-			this.cropContainer.removeEventListener('touchstart', blockModalSwipe);
-			this.cropContainer.removeEventListener('touchmove', blockModalSwipe);
-		});
-
 		const onStart = (e: MouseEvent | TouchEvent) => {
 			const isTouch = 'touches' in e;
 			if (!isTouch && e.button === 1 && e.target === this.originalImage) {
@@ -92,7 +80,7 @@ export class Crop extends Modal {
 			}
 
 			if (!isTouch && e.button !== 0) return;
-			if (e.target !== this.originalImage) return;
+			if (e.target !== this.originalImage && e.target !== this.cropContainer) return;
 
 			const coords = this.getEventCoords(e);
 			if (!coords) return;
@@ -109,8 +97,8 @@ export class Crop extends Modal {
 				display: 'block',
 				left: `${this.startX}px`,
 				top: `${this.startY}px`,
-				width: '0',
-				height: '0'
+				width: '0px',
+				height: '0px'
 			});
 		};
 
@@ -146,7 +134,6 @@ export class Crop extends Modal {
 			}
 			if ((isTouch || e.button === 0) && this.isDrawing) {
 				this.isDrawing = false;
-				// Ignore accidental 0x0 taps so the screen doesn't stay darkened with a dot
 				if (this.selectionArea.offsetWidth < 5 || this.selectionArea.offsetHeight < 5) {
 					this.selectionArea.setCssStyles({ display: 'none' });
 					return;

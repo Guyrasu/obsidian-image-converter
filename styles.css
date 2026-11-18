@@ -3844,23 +3844,25 @@ button.image-converter-encoder-detected:hover,
 		z-index: 3;
 	}
 
-	/* Stack Zoom slider below Rotation slider */
-	.modal-container.crop-tool-modal .image-controls {
-		display: flex;
-		flex-direction: column;
-		align-items: stretch;
-		gap: 6px;
-		width: 100%;
-	}
 
-	.modal-container.crop-tool-modal .image-controls .control-group {
-		display: flex;
-		align-items: center;
-		gap: 8px;
-		width: 100%;
-	}
+}
 
-	.modal-container.crop-tool-modal .image-controls .slider {
-		flex: 1 1 auto;
-	}
+/* Stack Zoom slider below Rotation slider */
+.modal-container.crop-tool-modal .image-controls {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 6px;
+	width: 100%;
+}
+
+.modal-container.crop-tool-modal .image-controls .control-group {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+}
+
+.modal-container.crop-tool-modal .image-controls .slider {
+	flex: 1 1 auto;
 }

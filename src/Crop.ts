@@ -49,6 +49,39 @@ export class Crop extends Modal {
 	private currentPanX = 0;
 	private currentPanY = 0;
 
+	/****************************
+	 * *** START My Customs *****
+	 ***************************/
+
+
+	private isTwoFingerGesture = false;
+	private initialPinchDistance = 0;
+	private initialPinchZoom = 1;
+	private lastMidX = 0;
+	private lastMidY = 0;
+	private zoomSliderEl: HTMLInputElement | null = null;
+	private zoomValueEl: HTMLSpanElement | null = null;
+
+
+
+
+	private getTwoTouchMetrics(touches: TouchList): { distance: number; midX: number; midY: number } {
+		const t0 = touches[0];
+		const t1 = touches[1];
+		const dx = t1.clientX - t0.clientX;
+		const dy = t1.clientY - t0.clientY;
+		return {
+			distance: Math.hypot(dx, dy),
+			midX: (t0.clientX + t1.clientX) / 2,
+			midY: (t0.clientY + t1.clientY) / 2
+		};
+	}
+
+
+	/******************************
+	 * *** END My Customs *********
+	 ******************************/
+
 	constructor(app: App, imageFile: TFile) {
 		super(app);
 		this.imageFile = imageFile;
@@ -71,6 +104,29 @@ export class Crop extends Modal {
 	private setupEventListeners() {
 		const onStart = (e: MouseEvent | TouchEvent) => {
 			const isTouch = 'touches' in e;
+
+			// Two-finger pan + pinch-to-zoom anywhere inside cropContainer (even over selectionArea)
+			if (isTouch && e.touches.length === 2) {
+				if (e.cancelable) e.preventDefault();
+				e.stopPropagation();
+
+				// Cancel any in-progress single-finger draw if the 2nd finger landed slightly later
+				if (this.isDrawing) {
+					this.isDrawing = false;
+					if (this.selectionArea.offsetWidth < 10 || this.selectionArea.offsetHeight < 10) {
+						this.selectionArea.setCssStyles({ display: 'none' });
+					}
+				}
+
+				const { distance, midX, midY } = this.getTwoTouchMetrics(e.touches);
+				this.isTwoFingerGesture = true;
+				this.initialPinchDistance = Math.max(distance, 1);
+				this.initialPinchZoom = this.zoom;
+				this.lastMidX = midX;
+				this.lastMidY = midY;
+				return;
+			}
+
 			if (!isTouch && e.button === 1 && e.target === this.originalImage) {
 				e.preventDefault();
 				this.isPanning = true;
@@ -103,6 +159,41 @@ export class Crop extends Modal {
 		};
 
 		const onMove = (e: MouseEvent | TouchEvent) => {
+			const isTouch = 'touches' in e;
+
+			if (isTouch && this.isTwoFingerGesture) {
+				if (e.touches.length < 2) return;
+				if (e.cancelable) e.preventDefault();
+				e.stopPropagation();
+
+				const { distance, midX, midY } = this.getTwoTouchMetrics(e.touches);
+
+				// 1. Pan by two-finger midpoint delta
+				this.currentPanX += midX - this.lastMidX;
+				this.currentPanY += midY - this.lastMidY;
+				this.lastMidX = midX;
+				this.lastMidY = midY;
+
+				// 2. Pinch-to-zoom by finger distance ratio
+				const scaleFactor = distance / this.initialPinchDistance;
+				const newZoom = Math.max(
+					this.MIN_ZOOM,
+					Math.min(this.MAX_ZOOM, this.initialPinchZoom * scaleFactor)
+				);
+				this.zoom = newZoom;
+
+				// Keep the Zoom slider UI in sync
+				if (this.zoomSliderEl) {
+					this.zoomSliderEl.value = String(Math.round(this.zoom * 100));
+				}
+				if (this.zoomValueEl) {
+					this.zoomValueEl.textContent = `${Math.round(this.zoom * 100)}%`;
+				}
+
+				this.applyTransforms();
+				return;
+			}
+
 			if (!this.isPanning && !this.isDrawing) return;
 			const coords = this.getEventCoords(e);
 			if (!coords) return;
@@ -128,6 +219,14 @@ export class Crop extends Modal {
 
 		const onEnd = (e: MouseEvent | TouchEvent) => {
 			const isTouch = 'touches' in e;
+
+			if (isTouch && this.isTwoFingerGesture) {
+				if (e.touches.length < 2) {
+					this.isTwoFingerGesture = false;
+				}
+				return;
+			}
+
 			if (!isTouch && e.button === 1 && this.isPanning) {
 				this.isPanning = false;
 				return;
@@ -527,6 +626,8 @@ export class Crop extends Modal {
 			cls: 'zoom-value'
 		});
 
+		this.zoomValueEl = zoomValue;
+
 		const zoomSlider = zoomContainer.createEl('input', {
 			type: 'range',
 			cls: 'slider zoom-slider',
@@ -536,6 +637,8 @@ export class Crop extends Modal {
 				value: '100'
 			}
 		});
+
+		this.zoomSliderEl = zoomSlider;
 
 		// Add event listeners
 		this.componentContainer.registerDomEvent(rotationSlider, 'input', (e: Event) => {
@@ -620,8 +723,13 @@ export class Crop extends Modal {
 		let initialTop = 0;
 
 		const onDragStart = (e: MouseEvent | TouchEvent) => {
+
+			if ('touches' in e && e.touches.length > 1) return;
 			if (!('touches' in e) && e.button !== 0) return;
+
+
 			const coords = this.getEventCoords(e);
+
 			if (!coords) return;
 
 			if (e.cancelable) e.preventDefault();
@@ -778,8 +886,13 @@ export class Crop extends Modal {
 		handles.forEach(handle => {
 			const el = handle as HTMLElement;
 			const onResizeStart = (e: MouseEvent | TouchEvent) => {
+
+				if ('touches' in e && e.touches.length > 1) return;
+
 				if (!('touches' in e) && e.button !== 0) return;
+
 				const coords = this.getEventCoords(e);
+
 				if (!coords) return;
 
 				if (e.cancelable) e.preventDefault();
@@ -921,6 +1034,9 @@ export class Crop extends Modal {
 		});
 		this.currentPanX = 0;
 		this.currentPanY = 0;
+		this.zoom = 1;
+		if (this.zoomSliderEl) this.zoomSliderEl.value = '100';
+		if (this.zoomValueEl) this.zoomValueEl.textContent = '100%';
 		this.applyTransforms();
 	}
 
